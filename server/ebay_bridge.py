@@ -62,7 +62,7 @@ def parse_search_results(items, shorten_title, item_cap=None):
             desc += " Made w/ eco-friendly {}.".format(item["material"])
             deal_type = "ecofriendly"
         else:
-            desc += " Used- prevent waste and save!"
+            desc += " Prevent waste and save: buy used!"
             deal_type = "reused"
         revised.append(
             {
@@ -141,6 +141,7 @@ def find_charitable(parsed):
 
 
 if __name__ == "__main__":
+    get_charity_name("21220")
     print(find_sustainable(input("Keywords: ")))
     print(find_charitable(input("Keywords: ")))
     print(find_used(input("Keywords: ")))

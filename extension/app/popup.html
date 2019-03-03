@@ -21,12 +21,12 @@
 
         <div class="container product_list">
           <div ng-class="'row product_sublist '"  ng-repeat="product in products">
-            <div ng-class="'col-xs-2'">
+            <div ng-class="'col-xs-3'">
                 <a class="btn btn-default product-button" href="{{product.deal_url}}" target="_blank">
                     <img src="{{product.image_url}}" alt="..." class="img-thumbnail {{product.deal_type}}">
                 </a>
             </div>
-            <div  ng-class="'col-xs-10 details'">
+            <div  ng-class="'col-xs-9 details'">
                 <p class="header">{{product.title}} {{product.price}}</p>
                 <p>{{product.desc}}</p>
             </div>
