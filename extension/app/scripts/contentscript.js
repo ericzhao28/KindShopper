@@ -1,4 +1,4 @@
-let grabData = function() {
+let grabData = function(text) {
   let title_elem = document.querySelector('[itemprop="name"]');
   let desc_elem = document.querySelector('[data-element="selling-statement"]');
   if ((title_elem == null) || (desc_elem == null)) {
@@ -10,6 +10,8 @@ let grabData = function() {
   console.log("Title " + title);
   let desc = desc_elem.textContent;
   console.log("Desc " + desc);
+  let query = text;
+  console.log("query " + query);
 
   var xhr = new XMLHttpRequest();
   var url = "https://localhost:8886/get_alts";
@@ -22,15 +24,15 @@ let grabData = function() {
           chrome.runtime.sendMessage({'message': "newdata", 'products': json.products});
       }
   };
-  var data = JSON.stringify({"title": title, "desc": desc});
+  var data = JSON.stringify({"title": title, "desc": desc, "query": text});
   xhr.send(data);
 }
 
-grabData();
+grabData('');
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.message == 'grabData') {
-        grabData();
+        grabData(request.text);
     }
 });
