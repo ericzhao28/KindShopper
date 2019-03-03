@@ -11,7 +11,7 @@ word_model = KeyedVectors.load_word2vec_format(
 
 
 def clean(sent):
-    return re.compile("[^a-zA-Z0-9_]").sub(" ", str(sent)).lower().strip()
+    return re.compile("[^a-zA-Z_]").sub(" ", str(sent)).lower().strip()
 
 
 def embed(word):
@@ -49,10 +49,10 @@ def is_strong(word):
 
 
 
-def parse_page(title, desc):
+def parse_page(title, desc, search_query):
     text = clean(title+desc)
     weak_keywords = []
-    strong_keywords = []
+    strong_keywords = [x for x in clean(search_query).split(" ") if x]
     for word in text.split(" "):
         if not word:
             continue
@@ -84,7 +84,7 @@ def shorten_title(long_title):
         else:
             weak_keywords.append(word)
     strong_title = " ".join(strong_keywords).capitalize() + "."
-    weak_title = " ".join(weak_keywords).capitalize() + "."
+    weak_title = " ".join(weak_keywords[:5]).capitalize() + "."
     return weak_title, strong_title
 
 

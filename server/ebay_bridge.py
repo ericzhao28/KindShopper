@@ -50,23 +50,20 @@ def parse_search_results(items, shorten_title, item_cap=None):
 
     revised = []
     for item in found:
-        pprint(item)
         price = "$" + item["sellingStatus"]["currentPrice"]["value"]
         num_price = float(item["sellingStatus"]["currentPrice"]["value"])
         image_url = item["galleryURL"]
         deal_url = item["viewItemURL"]
         desc, title = shorten_title(item["title"])
         if "charityId" in item:
-            desc += "Proceeds towards {}.".format(get_charity_name(item["charityId"]))
+            desc += " Proceeds towards {}.".format(get_charity_name(item["charityId"]))
             deal_type = "charitable"
         elif "material" in item:
-            desc += "Made w/ eco-friendly ".format(item["material"])
+            desc += " Made w/ eco-friendly {}.".format(item["material"])
             deal_type = "ecofriendly"
         else:
-            desc += "Used- prevent waste and save!"
+            desc += " Used- prevent waste and save!"
             deal_type = "reused"
-        print('Price: {}'.format(item["sellingStatus"]["currentPrice"]["value"] + " "
-                                 + item["sellingStatus"]["currentPrice"]["_currencyId"]))
         revised.append(
             {
                 "price": price,

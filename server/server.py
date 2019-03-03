@@ -19,8 +19,11 @@ def get_alts_route():
     try:
         title = request.json["title"]
         desc = request.json["desc"]
-        print(desc)
-        products = find_products(title, desc)
+        search_query = request.json["query"]
+        print("Title: ", title)
+        print("Desc: ", desc)
+        print("Search: ", search_query)
+        products = find_products(title, desc, search_query)
         print(products)
         return jsonify({"success": True, "products": products})
     except AssertionError:

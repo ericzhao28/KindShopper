@@ -5,18 +5,26 @@ import random
 
 def autobalance(used, sustainable, charitable):
     lengths = sorted([len(used), len(sustainable), len(charitable)])
-    length = int(float(lengths[0] + lengths[1]) / 2.0)
+    if min(lengths) < 5:
+        length = max(lengths)
+    else:
+        length = int(float(lengths[0] + lengths[1]) / 2.0)
     used = used[:length]
     sustainable = sustainable[:length]
     charitable = charitable[:length]
-    return random.shuffle(used+sustainable+charitable)
+    results = used+sustainable+charitable
+    random.shuffle(results)
+    return results
 
 
-def find_products(title, desc):
-    exact, soft = parse_page(title, desc)
+def find_products(title, desc, search_query):
+    exact, soft = parse_page(title, desc, search_query)
+    print("Exact: ", exact)
+    print("Soft: ", soft)
     used = parse_search_results(find_used(exact), shorten_title)
     sustainable = parse_search_results(find_sustainable(soft), shorten_title)
     charitable = parse_search_results(find_charitable(soft), shorten_title)
+    print(len(used), len(sustainable), len(charitable))
     return autobalance(used, sustainable, charitable)
 
 
