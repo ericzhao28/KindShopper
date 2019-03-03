@@ -5,8 +5,7 @@ Backend API logic.
 from flask import request, jsonify, Flask
 from flask_cors import CORS
 
-from nlp import parse_page
-from ebay_bridge import find_products
+from .find import find_products
 
 
 # FlaskAPI does not support flask_graphql, using Flask instead
@@ -18,9 +17,9 @@ cors = CORS(app)
 def get_alts_route():
     """ Upload a new message. """
     try:
-        parsed = parse_page(str(request.json["product_description"]))
-        print(parsed)
-        products = find_products(parsed)
+        page_info = request.json["page_info"]
+        print(page_info)
+        products = find_products(page_info)
         print(products)
         return jsonify({"success": True, "products": products})
     except AssertionError:

@@ -1,0 +1,12 @@
+indigo
+purple
+navy blue
+green
+bright
+dark
+striped
+solid
+red
+maroon
+bordeaux
+sport

@@ -1,4 +1,4 @@
-from server import app
+from .server import app
 
 
 print('Flask app running at 0.0.0.0:8886')
