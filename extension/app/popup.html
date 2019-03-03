@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" ng-app=popup ng-csp>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- build:css popup.css -->
+        <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+        <link rel="stylesheet" href="css/angular-csp.css" type="text/css">
+        <link rel="stylesheet" href="css/popup.css" type="text/css">
+        <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <!-- endbuild -->
+    <title>KindShopper</title>
+  </head>
+
+  <body>
+
+    <div ng-controller="MainController">
+        <h3 class="title"><img src="images/icon-38.png" class="img-circle" alt="Logo"> {{welcomeMsg}}</h2>
+
+        <div class="container product_list">
+          <div ng-class="'row product_sublist '"  ng-repeat="product in products">
+            <div ng-class="'col-xs-2'">
+                <a class="btn btn-default product-button" href="{{product.deal_url}}" target="_blank">
+                    <img src="{{product.image_url}}" alt="..." class="img-thumbnail {{product.deal_type}}">
+                </a>
+            </div>
+            <div  ng-class="'col-xs-10 details'">
+                <p class="header">{{product.title}} {{product.price}}</p>
+                <p>{{product.desc}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="row searchbar">
+          <input class="form-control" ng-model="name" placeholder="Write your name">
+        </div>
+    </div>
+
+    <!-- build:js popup.js -->
+    <script src="js/jquery/jquery.min.js"></script>
+    <script src="js/underscore/underscore.js"></script>
+    <script src="js/bootstrap/bootstrap.min.js"></script>
+    <script src="js/angular/angular.min.js"></script>
+    <script src="scripts/app/modules/angular-underscore.min.js"></script>
+    <script src="scripts/app/modules/ui-bootstrap-0.9.0.min.js"></script>
+    <script src="scripts/app/app.js"></script>
+    <script src="scripts/app/services/storage.js"></script>
+    <script src="scripts/app/controllers/controllers.js"></script>
+    <!-- endbuild -->
+  </body>
+</html>

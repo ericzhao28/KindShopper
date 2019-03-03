@@ -1,0 +1,57 @@
+{
+    "name": "KindShopper",
+    "version": "1.0.0",
+    "manifest_version": 2,
+    "description": "Save your wallet, save the planet, save the world.",
+    "icons": {
+        "16": "images/icon-16.png",
+        "128": "images/icon-128.png"
+    },
+    "default_locale": "en",
+    "background": {
+        "page": "background.html"
+    },
+    "browser_action": {
+        "default_icon": {
+            "19": "images/icon-19.png",
+            "38": "images/icon-38.png"
+        },
+        "default_title": "Chrome Extension",
+        "default_popup": "popup.html"
+    },
+    "externally_connectable": {
+        "matches": [
+        ]
+    },
+    "permissions": [
+        "http://*/*",
+        "https://*/*",
+        "contextMenus",
+        "storage",
+        "notifications",
+        "clipboardRead",
+        "clipboardWrite",
+        "tabs",
+        "<all_urls>"
+    ],
+    "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+    "web_accessible_resources": [
+        "http://fonts.googleapis.com/",
+        "https://*.google-analytics.com/**/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://nordstrom.com/*",
+                "https://shop.nordstrom.com/*",
+                "http://nordstrom.com/*",
+                "http://shop.nordstrom.com/*"
+            ],
+            "css": [],
+            "run_at": "document_end",
+            "js": [
+                "scripts/contentscript.js"
+            ]
+        }
+    ]
+}
