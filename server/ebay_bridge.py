@@ -21,12 +21,13 @@ trading_api = Trading(domain='api.ebay.com', appid=EBAY_APP_ID, devid=EBAY_DEV_I
 # trading_api = Trading(domain='api.sandbox.ebay.com', appid=SAND_EBAY_APP_ID, devid=SAND_EBAY_DEV_ID,
 #                      certid=SAND_EBAY_CERT_ID, token=SAND_EBAY_TOKEN, config_file=None)
 
+
 cache = {}
 
 def get_charity_name(charity_id):
     if charity_id in cache:
         return cache[charity_id]
-    AVAILBLE_CHARITIES = ["Per Scholas, Inc.", "Feeding America", "The Humane Society of the United States", "United Way Worldwide", "World Central Kitchen, Inc", "Share Our Strength", "Action Against Hunger USA", "Heifer International", "Children's Hunger Fund", "Second Harvest Heartland", "The Nature Conservancy", "World Wildlife Fund", "Earthjustice", "Conservation International"]
+    AVAILBLE_CHARITIES = ["Per Scholas, Inc.", "Feeding America", "The Humane Society", "United Way Worldwide", "World Central Kitchen", "Share Our Strength", "Action Against Hunger USA", "Heifer International", "Children's Hunger Fund", "Second Harvest Heartland", "The Nature Conservancy", "World Wildlife Fund", "Earthjustice", "Conservation International"]
     name = random.choice(AVAILBLE_CHARITIES)
     # trading_api.execute('GetCharities', {'CharityID': charity_id})
     # name = finding_api.response.reply.Charity.Name
@@ -34,7 +35,7 @@ def get_charity_name(charity_id):
     return name
 
 
-def parse_search_results(items, item_cap=None):
+def parse_search_results(items, shorten_title, item_cap=None):
     found = {}
     for item in items:
         if item["title"] not in found:
@@ -47,18 +48,37 @@ def parse_search_results(items, item_cap=None):
     if item_cap:
         found = found[:item_cap]
 
+    revised = []
     for item in found:
-        # pprint(dictstr['searchResult']['item'])
-        print('Title: {}'.format(item['title']))
-        print('URL: {}'.format(item['viewItemURL']))
-        print("Image: {}".format(item["galleryURL"]))
+        pprint(item)
+        price = "$" + item["sellingStatus"]["currentPrice"]["value"]
+        num_price = float(item["sellingStatus"]["currentPrice"]["value"])
+        image_url = item["galleryURL"]
+        deal_url = item["viewItemURL"]
+        desc, title = shorten_title(item["title"])
         if "charityId" in item:
-            print("Charity: {}".format(get_charity_name(item["charityId"])))
-        if "material" in item:
-            print("Material: {}".format(item["material"]))
+            desc += "Proceeds towards {}.".format(get_charity_name(item["charityId"]))
+            deal_type = "charitable"
+        elif "material" in item:
+            desc += "Made w/ eco-friendly ".format(item["material"])
+            deal_type = "ecofriendly"
+        else:
+            desc += "Used- prevent waste and save!"
+            deal_type = "reused"
         print('Price: {}'.format(item["sellingStatus"]["currentPrice"]["value"] + " "
                                  + item["sellingStatus"]["currentPrice"]["_currencyId"]))
-    return found
+        revised.append(
+            {
+                "price": price,
+                "num_price": num_price,
+                "image_url": image_url,
+                "deal_url": deal_url,
+                "title": title,
+                "deal_type": deal_type,
+                "desc": desc
+            }
+        )
+    return revised
 
 
 def find_used(parsed):
@@ -69,7 +89,7 @@ def find_used(parsed):
              'value': 'Used'},
         ],
         'paginationInput': {
-            'entriesPerPage': '50',
+            'entriesPerPage': '10',
             'pageNumber': '1'
         },
         'sortOrder': 'BestMatch'
@@ -78,8 +98,7 @@ def find_used(parsed):
     dictstr = finding_api.response.dict()
     if "item" not in dictstr["searchResult"]:
         return []
-
-    return parse_search_results(dictstr['searchResult']['item'], 5)
+    return dictstr['searchResult']['item']
 
 
 SUSTAINABLE_MATERIALS = ["organic cotton", "tencel", "lyocell", "hemp", "linen", "flax", "silk"]
@@ -89,7 +108,7 @@ def find_sustainable(parsed):
         finding_api.execute("findItemsAdvanced", {
             'keywords': parsed + '"{}"'.format(material),
             'paginationInput': {
-                'entriesPerPage': '50',
+                'entriesPerPage': '10',
                 'pageNumber': '1'
             },
             'sortOrder': 'BestMatch'
@@ -102,7 +121,7 @@ def find_sustainable(parsed):
             all_items += material_items
     if not all_items:
         return []
-    return parse_search_results(all_items, 5)
+    return all_items
 
 
 def find_charitable(parsed):
@@ -113,7 +132,7 @@ def find_charitable(parsed):
              'value': 'True'},
         ],
         'paginationInput': {
-            'entriesPerPage': '50',
+            'entriesPerPage': '10',
             'pageNumber': '1'
         },
         'sortOrder': 'BestMatch'
@@ -121,10 +140,10 @@ def find_charitable(parsed):
     dictstr = finding_api.response.dict()
     if "item" not in dictstr["searchResult"]:
         return []
-    return parse_search_results(dictstr['searchResult']['item'], 5)
+    return dictstr['searchResult']['item']
 
 
 if __name__ == "__main__":
-    find_sustainable(input("Keywords: "))
-    find_charitable(input("Keywords: "))
-    find_used(input("Keywords: "))
+    print(find_sustainable(input("Keywords: ")))
+    print(find_charitable(input("Keywords: ")))
+    print(find_used(input("Keywords: ")))

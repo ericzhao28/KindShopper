@@ -3,3 +3,4 @@
 *.swo
 .idea/**
 server/config.py
+*.gz

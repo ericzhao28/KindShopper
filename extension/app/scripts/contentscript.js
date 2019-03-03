@@ -11,13 +11,19 @@ let grabData = function() {
   let desc = desc_elem.textContent;
   console.log("Desc " + desc);
 
-  $http.post("http://localhost:5000/get_products", {"title": title, "desc": desc}, {headers: {'Content-Type': 'application/json'} })
-  .then(function (response) {
-      console.log(response.data);
-      chrome.runtime.sendMessage({'message': "newdata", 'products': response.data});
-  });
-
-
+  var xhr = new XMLHttpRequest();
+  var url = "https://localhost:8886/get_alts";
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+          var json = JSON.parse(xhr.responseText);
+          console.log(json.products);
+          chrome.runtime.sendMessage({'message': "newdata", 'products': json.products});
+      }
+  };
+  var data = JSON.stringify({"title": title, "desc": desc});
+  xhr.send(data);
 }
 
 grabData();
